@@ -3,8 +3,29 @@ import Container from "../spaccing/container";
 import PagePadding from "../spaccing/page-padding";
 import ContentBody from "../layout/content-body";
 import iconDown from "../../assets/icon/down.png"
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "../../services/index."
+import React, { useEffect, useState } from "react";
 
 const PDF = () => {
+  const navigate = useNavigate();
+  const [guest, setGuest] = useState("")
+  const { id } = useParams();
+
+  const getGuest = async () => {
+    try {
+      const guest = await axios.get(`people/${id}`)
+      if (guest.data == null || guest.data == undefined) {
+        navigate("/")
+      } else {
+        setGuest(guest.data)
+      }
+    } catch (error) {
+      navigate("/")
+    }
+  }
+
+  useEffect(() => { getGuest() }, [])
   return (
     <>
       <Box>
