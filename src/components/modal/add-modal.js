@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "../../services/index."
 import {
   Modal,
@@ -12,10 +12,10 @@ import {
   IconButton,
   Stack,
 } from "@chakra-ui/react";
-import { CopyIcon, CheckIcon } from "@chakra-ui/icons";
+import { CopyIcon, CheckIcon, DownloadIcon } from "@chakra-ui/icons";
 import image from "../../assets/images/pedro.png"
-import { WhatsappShareButton, WhatsappIcon } from "react-share"
 import { saveAs } from 'file-saver';
+import { html2canvas } from "html2canvas"
 
 const AddModal = ({ isOpen, onClose, onReset }) => {
   const [name, setName] = useState("");
@@ -52,6 +52,22 @@ const AddModal = ({ isOpen, onClose, onReset }) => {
     if (generatedLink) {
       navigator.clipboard.writeText(generatedLink)
     }
+  };
+
+  const componentRef = useRef(null);
+
+  const handleDownloadClick = () => {
+    // Captura o elemento HTML usando html2canvas
+    html2canvas(componentRef.current).then((canvas) => {
+      // Converte o canvas em uma imagem JPG
+      const imgData = canvas.toDataURL('image/jpeg');
+
+      // Cria um elemento de link para download
+      const a = document.createElement('a');
+      a.href = imgData;
+      a.download = 'component.jpg';
+      a.click();
+    });
   };
 
   return (
@@ -96,10 +112,10 @@ const AddModal = ({ isOpen, onClose, onReset }) => {
                   onClick={handleCopyLink}
                   isDisabled={isLinkCopied}
                 />
-                <div style={{ height: "40px", width: "40px", display: "flex", justifyContent: "center", alignItems: "center", paddingLeft: "12px" }}>
-                  <WhatsappShareButton url={generatedLink} title="Convite chá de bebe" separator=": ">
-                    <WhatsappIcon borderRadius={8} size={40}></WhatsappIcon>
-                  </WhatsappShareButton>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", paddingLeft: "12px" }}>
+                  <Button>
+                    <DownloadIcon />
+                  </Button>
                 </div>
               </div>
             </Stack>
